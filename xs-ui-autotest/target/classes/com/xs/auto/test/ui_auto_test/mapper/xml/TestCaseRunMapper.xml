@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xs.auto.test.ui_auto_test.mapper.TestCaseRunMapper">
+
+    <!-- 清空test_case_run表数据 -->
+    <delete id="truncateTestCaseRun">
+        TRUNCATE TABLE test_case_run
+    </delete>
+
+    <!-- 同步测试用例运行统计信息 -->
+    <insert id="syncTestCaseRunStats">
+        INSERT INTO test_case_run (
+            case_id,
+            class_name,
+            method_name,
+            last_run_result,
+            last_run_config_id,
+            last_run_start_time,
+            run_count,
+            success_count,
+            error_count,
+            run_time_count
+        )
+        SELECT
+            case_id,
+            class_name,
+            method_name,
+            -- 最近一次执行结果（按开始时间倒序取第一条）
+            (SELECT run_result
+             FROM test_case_run_info t2
+             WHERE t2.case_id = t1.case_id
+               AND t2.class_name = t1.class_name
+               AND t2.method_name = t1.method_name
+             ORDER BY start_time DESC
+                LIMIT 1) as last_run_result,
+            -- 最近一次执行配置ID
+            (SELECT config_id
+             FROM test_case_run_info t3
+             WHERE t3.case_id = t1.case_id
+               AND t3.class_name = t1.class_name
+               AND t3.method_name = t1.method_name
+             ORDER BY start_time DESC
+             LIMIT 1) as last_run_config_id,
+            -- 最近一次执行时间
+            (SELECT start_time
+             FROM test_case_run_info t4
+             WHERE t4.case_id = t1.case_id
+               AND t4.class_name = t1.class_name
+               AND t4.method_name = t1.method_name
+             ORDER BY start_time DESC
+             LIMIT 1) as last_run_start_time,
+            -- 累计执行次数
+            COUNT(*) as run_count,
+            -- 成功执行总数
+            SUM(CASE WHEN run_result = 1 THEN 1 ELSE 0 END) as success_count,
+            -- 失败执行总数
+            SUM(CASE WHEN run_result = 0 THEN 1 ELSE 0 END) as error_count,
+            -- 执行累计耗时
+            SUM(COALESCE(run_time, 0)) as run_time_count
+        FROM test_case_run_info t1
+        WHERE case_id IS NOT NULL
+          AND class_name IS NOT NULL
+          AND method_name IS NOT NULL
+        GROUP BY case_id, class_name, method_name
+        ORDER BY case_id, class_name, method_name
+    </insert>
+
+    <!-- 根据caseId列表同步测试用例运行统计信息 -->
+    <insert id="syncTestCaseRunStatsByCaseIds">
+        INSERT INTO test_case_run (
+        case_id,
+        class_name,
+        method_name,
+        last_run_result,
+        last_run_config_id,
+        last_run_start_time,
+        run_count,
+        success_count,
+        error_count,
+        run_time_count
+        )
+        SELECT
+        case_id,
+        class_name,
+        method_name,
+        -- 最近一次执行结果
+        (SELECT run_result
+        FROM test_case_run_info t2
+        WHERE t2.case_id = t1.case_id
+        AND t2.class_name = t1.class_name
+        AND t2.method_name = t1.method_name
+        ORDER BY start_time DESC
+        LIMIT 1) as last_run_result,
+        -- 最近一次执行配置ID
+        (SELECT config_id
+        FROM test_case_run_info t3
+        WHERE t3.case_id = t1.case_id
+        AND t3.class_name = t1.class_name
+        AND t3.method_name = t1.method_name
+        ORDER BY start_time DESC
+        LIMIT 1) as last_run_config_id,
+        -- 最近一次执行时间
+        (SELECT start_time
+        FROM test_case_run_info t4
+        WHERE t4.case_id = t1.case_id
+        AND t4.class_name = t1.class_name
+        AND t4.method_name = t1.method_name
+        ORDER BY start_time DESC
+        LIMIT 1) as last_run_start_time,
+        -- 累计执行次数
+        COUNT(*) as run_count,
+        -- 成功执行总数
+        SUM(CASE WHEN run_result = 1 THEN 1 ELSE 0 END) as success_count,
+        -- 失败执行总数
+        SUM(CASE WHEN run_result = 0 THEN 1 ELSE 0 END) as error_count,
+        -- 执行累计耗时
+        SUM(COALESCE(run_time, 0)) as run_time_count
+        FROM test_case_run_info t1
+        WHERE case_id IN
+        <foreach collection="caseIds" item="caseId" open="(" separator="," close=")">
+            #{caseId}
+        </foreach>
+        AND case_id IS NOT NULL
+        AND class_name IS NOT NULL
+        AND method_name IS NOT NULL
+        GROUP BY case_id, class_name, method_name
+        ORDER BY case_id, class_name, method_name
+        ON DUPLICATE KEY UPDATE
+        last_run_result = VALUES(last_run_result),
+        last_run_config_id = VALUES(last_run_config_id),
+        last_run_start_time = VALUES(last_run_start_time),
+        run_count = VALUES(run_count),
+        success_count = VALUES(success_count),
+        error_count = VALUES(error_count),
+        run_time_count = VALUES(run_time_count)
+    </insert>
+
+    <!-- 增量更新单个测试用例的运行统计 -->
+    <insert id="upsertTestCaseRunStats">
+        INSERT INTO test_case_run (
+            case_id,
+            class_name,
+            method_name,
+            last_run_result,
+            last_run_config_id,
+            last_run_start_time,
+            run_count,
+            success_count,
+            error_count,
+            run_time_count
+        )
+        SELECT
+            case_id,
+            class_name,
+            method_name,
+            run_result as last_run_result,
+            config_id as last_run_config_id,
+            start_time as last_run_start_time,
+            1 as run_count,
+            CASE WHEN run_result = 1 THEN 1 ELSE 0 END as success_count,
+            CASE WHEN run_result = 0 THEN 1 ELSE 0 END as error_count,
+            COALESCE(run_time, 0) as run_time_count
+        FROM test_case_run_info
+        WHERE id = #{runInfoId}
+            ON DUPLICATE KEY UPDATE
+                                 last_run_result = VALUES(last_run_result),
+                                 last_run_config_id = VALUES(last_run_config_id),
+                                 last_run_start_time = VALUES(last_run_start_time),
+                                 run_count = run_count + 1,
+                                 success_count = success_count + VALUES(success_count),
+                                 error_count = error_count + VALUES(error_count),
+                                 run_time_count = run_time_count + VALUES(run_time_count)
+    </insert>
+</mapper>

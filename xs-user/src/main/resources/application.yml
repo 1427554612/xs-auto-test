@@ -1,0 +1,17 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: xs-user
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        group: DEFAULT_GROUP
+        ip: ${HOST_IP:${spring.cloud.client.ip-address}}
+        port: ${SERVER_PORT:${server.port}}
+server:
+  port: 10001

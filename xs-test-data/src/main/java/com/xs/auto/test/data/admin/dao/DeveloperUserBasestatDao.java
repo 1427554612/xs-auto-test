@@ -1,0 +1,17 @@
+package com.xs.auto.test.data.admin.dao;
+
+import com.xs.auto.test.data.admin.entity.DeveloperUserBasestatEntity;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * 开发者基础统计表
+ * 
+ * @author zhangjun
+ * @email leifengyang@gmail.com
+ * @date 2025-09-19 15:40:15
+ */
+@Mapper
+public interface DeveloperUserBasestatDao extends BaseMapper<DeveloperUserBasestatEntity> {
+	
+}

@@ -1,0 +1,19 @@
+package com.xs.auto.test.data.admin.service;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.xs.auto.test.data.admin.common.PageUtils;
+import com.xs.auto.test.data.admin.entity.DeveloperIncomeGameSettingsHistoryEntity;
+
+import java.util.Map;
+
+/**
+ * 游戏收益分配设置历史操作表
+ *
+ * @author zhangjun
+ * @email leifengyang@gmail.com
+ * @date 2025-09-19 15:40:15
+ */
+public interface DeveloperIncomeGameSettingsHistoryService extends IService<DeveloperIncomeGameSettingsHistoryEntity> {
+
+}
+
