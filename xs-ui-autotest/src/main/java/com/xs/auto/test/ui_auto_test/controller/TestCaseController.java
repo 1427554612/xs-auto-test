@@ -41,11 +41,6 @@ public class TestCaseController {
     @Autowired
     ObjectMapper objectMapper;
 
-    @GetMapping("/test")
-    public R testRpcApi(){
-        Map<String, Object> stringObjectMap = testCaseService.testRpcApi();
-        return R.ok().data(stringObjectMap);
-    }
 
     @GetMapping("/websocket")
     public R testWebsocket() throws IOException {

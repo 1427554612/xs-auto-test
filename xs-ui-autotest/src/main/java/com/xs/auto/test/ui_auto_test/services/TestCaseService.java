@@ -32,9 +32,4 @@ public interface TestCaseService extends IService<TestCase> {
      */
     List<String> getRunCaseMethod(String classId);
 
-    /**
-     * 测试RPC远程接口上传
-     * @return
-     */
-    Map<String,Object> testRpcApi();
 }

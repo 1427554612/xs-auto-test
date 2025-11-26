@@ -139,33 +139,6 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         return (List<String>)executor.getClassMethods(testCase);
     }
 
-    /**
-     * 测试rpc接口
-     */
-    public Map<String,Object>  testRpcApi() {
-        String filePath = "D:\\autotest\\2025-11-13-12-20\\testHome-image.png";
-        Map<String, Object> uploadResultMap = null;
-        try {
-            System.out.println("=== 使用字节数组测试 Dubbo RPC 调用 ===");
 
-            // 读取文件为字节数组
-            File file = new File(filePath);
-            byte[] fileBytes = Files.readAllBytes(file.toPath());
-            System.out.println("读取文件字节数: " + fileBytes.length);
-
-            // 调用字节数组版本的上传方法
-            uploadResultMap = ftpServerApi.uploadFileBytes(
-                    fileBytes,
-                    "test_screenshot.png",
-                    "image/png",
-                    "test"
-            );
-
-        } catch (Exception e) {
-            System.err.println("字节数组 RPC 调用失败: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return uploadResultMap;
-    }
 
 }
