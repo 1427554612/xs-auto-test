@@ -72,7 +72,7 @@ public class BaseTestCase<T>{
       }
       // 清空日志
       websocketLogFactory.clearLogs();
-      System.out.println("当前日志的内容为：" + websocketLogFactory.stringBuilder.toString());
+      System.out.println("当前日志的内容：" + websocketLogFactory.stringBuilder.toString());
    }
 
    // 添加一个检查方法，确保在使用前已初始化
