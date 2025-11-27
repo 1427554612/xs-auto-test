@@ -1,0 +1,53 @@
+# MinIO 配置（对应Docker部署的MinIO）
+minio:
+  endpoint: http://192.168.0.175:9002
+  access-key: admin
+  secret-key: admin123
+  bucket-name: autotest
+
+# Spring Boot 配置
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  application:
+    name: xs-ftp-server
+  profiles:
+    active: dev
+  cloud:
+    #nacos配置
+    nacos:
+      config:
+        import-check:
+          enabled: false
+      discovery:
+        server-addr: 192.168.0.175:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        group: DEFAULT_GROUP
+        ip: ${HOST_IP:${spring.cloud.client.ip-address}}
+        port: ${SERVER_PORT:${server.port}}
+
+# Dubbo 配置
+dubbo:
+  scan:
+    base-packages: com.xs.auto.test.ftp.service.impl # 指定 Dubbo 服务注解扫描包
+  protocol:
+    name: dubbo # 使用 dubbo 协议
+    port: -1 # 端口 -1 表示随机端口，避免冲突。也可指定如 20880
+  registry:
+    address: nacos://${spring.cloud.nacos.discovery.server-addr} # 关键！使用 Spring Cloud 注册中心
+  application:
+    name: xs-ftp-server
+    qos-enable: false
+
+# 日志配置
+logging:
+  level:
+    com.example.minio: DEBUG
+    io.minio: INFO
+
+server:
+  port: 10010

@@ -1,0 +1,207 @@
+version: '3.8'
+services: 
+  mysql_master:
+    image: mysql:5.7
+    command: [
+        "--default-authentication-plugin=mysql_native_password",
+        "--server-id=1",
+        "--log-bin=mysql-bin",
+        "--binlog-format=ROW",
+        "--sync-binlog=1",
+        "--skip-grant-tables"
+      ] 
+    environment: 
+      - "MYSQL_ROOT_PASSWORD=123456"
+      - "MYSQL_ALLOW_EMPTY_PASSWORD=yes"
+    ports:
+      - "3306:3306"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 180s
+    networks:
+      - net1
+    volumes: 
+      - /zj_apps/mysql_docker_master:/var/lib/mysql
+      - /zj_apps/mysql_docker_master/master-init/my.cnf:/etc/mysql/conf.d/my.cnf
+    healthcheck: 
+      test: ["CMD", "mysqladmin" , "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  # redis_master
+  redis_master:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    command: redis-server /etc/redis/redis.conf
+    volumes:
+      - /zj_apps/redis_docker_master/redis_master.conf:/etc/redis/redis.conf
+      - /zj_apps/redis_docker_master:/data
+    networks:
+      - net1
+    healthcheck:
+        test: ["CMD", "redis-cli", "ping"]
+        interval: 10s
+        timeout: 3s
+        retries: 3
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 180s
+  # portainer
+  portainer: 
+    image: portainer/portainer-ce:latest
+    ports: 
+      - "9000:9000"
+    networks:  
+      - net1
+    volumes: 
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/zj_apps/portainer_docker:/data"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 180s
+  # nacos
+  nacos:
+    image: nacos/nacos-server:v2.0.3
+    environment: 
+      - MODE=standalone
+      - NACOS_AUTH_ENABLE=false
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 180s
+    networks:
+      - net1
+    volumes: 
+      - /zj_apps/nacos_docker/logs:/home/nacos/logs
+  # zookeeper    
+  zookeeper:
+    image: bitnami/zookeeper:3.8
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 180s
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    volumes:
+      - /zj_apps/zookeeper_docker:/bitnami/zookeeper
+    networks: 
+      - net1
+  # kafka
+  kafka:
+    image: bitnami/kafka:3.4
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 180s
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,EXTERNAL://:29092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://192.168.0.35:9092,EXTERNAL://192.168.0.35:29092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+    volumes:
+      - /zj_apps/kafka_docker:/bitnami/kafka
+    depends_on:
+      - zookeeper
+    networks: 
+      - net1
+  # kafka-manager
+  kafka-manager:
+    image: hlebalbau/kafka-manager:stable
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 180s
+    ports:
+      - "9001:9000"
+    environment:
+      - ZK_HOSTS=zookeeper:2181
+      - KAFKA_MANAGER_AUTH_ENABLED=false
+    networks: 
+      - net1
+  # grafana
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_UNIFIED_ALERTING_ENABLED=true
+    volumes:
+      - /zj_apps/grafana_docker/grafana.ini:/etc/grafana/grafana.ini
+      - /zj_apps/grafana_docker/provisioning:/etc/grafana/provisioning
+      - /zj_apps/grafana_docker/data:/var/lib/grafana
+    networks:
+      - net1
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager 
+      # any - 任何情况都重启（容器退出、节点重启、任务失败等）  none - 从不重启  on-failure - 只在非零退出码时重启
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 180s
+networks:
+  net1:
+    driver: overlay
+    attachable: true

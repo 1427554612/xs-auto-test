@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "spring.kafka.producer.enable-idempotence",
+      "type": "java.lang.String",
+      "description": "Description for spring.kafka.producer.enable-idempotence."
+  }
+] }

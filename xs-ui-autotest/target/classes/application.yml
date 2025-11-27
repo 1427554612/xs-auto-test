@@ -1,0 +1,73 @@
+spring:
+#  boot:
+#    admin:
+#      client:
+#        url: http://192.168.0.140:10021  # Admin Server地址
+#        instance:
+#          name: ${spring.application.name}
+#          service-url: http://192.168.0.140:${server.port}
+#          management-url: http://192.168.0.140:${server.port}/actuator
+#        username: admin
+#        password: admin123
+  datasource:
+    url: jdbc:mysql://192.168.0.175:3306/auto-test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  profiles:
+    active: dev
+  application:
+    name: xs-ui-autotest
+  cloud:
+    nacos:
+      config:
+        import-check:
+          enabled: false
+      discovery:
+        server-addr: 192.168.0.175:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        group: DEFAULT_GROUP
+        ip: ${HOST_IP:${spring.cloud.client.ip-address}}
+        port: ${SERVER_PORT:${server.port}}
+dubbo:
+  scan:
+    base-packages: com.xs.auto.test.ui_auto_test.controller
+  registry:
+    address: nacos://${spring.cloud.nacos.discovery.server-addr}
+  cloud:
+    subscribed-services: xs-ftp-server # 关键！声明要订阅的服务提供者应用名
+  consumer:
+    check: false
+    timeout: 3000
+  application:
+    name: xs-auto-test
+server:
+  port: 10002
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+    info:
+      enabled: true
+logging:
+  level:
+    de.codecentric: DEBUG
+    org.springframework.boot.autoconfigure: DEBUG
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  mapper-locations: classpath:com/xs/auto/test/ui_auto_test/mapper/xml/*.xml

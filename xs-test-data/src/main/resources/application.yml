@@ -1,0 +1,44 @@
+server:
+  port: 10022
+spring:
+  datasource:
+    dynamic:
+      primary: jogosmaster # 设置默认的数据源或者数据源组，默认值即为master
+      strict: false # 严格匹配数据源，默认false。true未匹配到指定数据源时抛异常，false使用默认数据源
+      datasource:
+        druid:
+          default-auto-commit: true
+        jogosmaster:
+          url: jdbc:mysql://192.168.0.180:3155/jogosmaster?useUnicode=true&characterEncoding=utf8&useSSL=false
+          username: root
+          password: Game@mysql3155
+          driver-class-name: com.mysql.cj.jdbc.Driver
+        jogospay:
+          url: jdbc:mysql://192.168.0.180:3155/jogospay?useUnicode=true&characterEncoding=utf8&useSSL=false
+          username: root
+          password: Game@mysql3155
+          driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+      # 可选配置
+      hikari:
+        max-lifetime: 1800000
+        connection-timeout: 5000
+        idle-timeout: 600000
+        max-pool-size: 15
+        min-idle: 5
+        connection-test-query: select 1
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+
+script:
+  path: D:/jmeter_results/user.csv
+
+data:
+  number: 1000

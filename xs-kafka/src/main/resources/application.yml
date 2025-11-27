@@ -1,0 +1,45 @@
+spring:
+  profiles:
+    active: dev
+  kafka:
+    bootstrap-servers: 192.168.0.84:9092 # Kafka服务器地址
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: 0 # 消息确认模式
+      retries: 3  # broker不可用时，生产者自动重试发送次数
+      enable-idempotence: true # 开启消息幂等，避免消息发送到broker的时候因为网络问题重复发送
+      # 缓冲区与批处理
+      # 生产者并非每条消息都立即发送，而是会先放入缓冲区，积累到一个批次（Batch）后再统一发送，这极大地提升了效率。
+      # batch.size: 批次大小的上限（默认 16KB）。达到此大小，批次立即发送。
+      # linger.ms: 批次等待时间的上限（默认 0ms）。即使批次未满，等待超过这个时间后也会发送
+      # 批量发送相关配置
+      linger-ms: 100        # 等待100毫秒进行批量发送
+      batch-size: 16384     # 批次大小为16KB
+      buffer-memory: 33554432 # 缓冲区内存32MB
+      # 压缩配置
+      compression-type: lz4
+    consumer:
+      group-id: my-group-1 # 消费者组ID
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: false # 关闭自动提交
+      auto-offset-reset: earliest # 从最早的消息开始消费
+      properties:
+        # 提交间隔（毫秒），默认5000
+        auto.commit.interval.ms: 5000
+        partition.assignment.strategy: org.apache.kafka.clients.consumer.CooperativeStickyAssignor
+
+    listener:
+      ack-mode: MANUAL_IMMEDIATE # 手动提交模式
+    properties:
+      # 强制覆盖 Kafka 返回的主机名
+      spring.json.trusted.packages: "*"
+      # 如果 Kafka 返回的主机名是 kafka:9092，强制替换为 192.168.0.35:9092
+      advertised.listeners: PLAINTEXT://192.168.0.84:9092
+      metadata.max.age.ms: 1000
+      listener.security.protocol.map: PLAINTEXT:PLAINTEXT
+  application:
+    name: xs-kafka
+server:
+  port: 10015

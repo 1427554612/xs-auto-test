@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="xs-ui-autotest" />
+        <module name="xs-kafka" />
+        <module name="xs-web" />
+        <module name="xs-springboot-admin" />
+        <module name="xs-jmeter" />
+        <module name="xs-user" />
+        <module name="xs-test-data" />
+        <module name="xs-gateway" />
+        <module name="xs-common" />
+        <module name="renren-generator" />
+        <module name="xs-jmeter-web" />
+        <module name="xs-ftp-server" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="renren-generator" options="-parameters" />
+      <module name="xs-auto-test" options="-parameters" />
+      <module name="xs-common" options="-parameters" />
+      <module name="xs-ftp-server" options="-parameters" />
+      <module name="xs-gateway" options="-parameters" />
+      <module name="xs-jmeter" options="-parameters" />
+      <module name="xs-jmeter-web" options="-parameters" />
+      <module name="xs-kafka" options="-parameters" />
+      <module name="xs-springboot-admin" options="-parameters" />
+      <module name="xs-test-data" options="-parameters" />
+      <module name="xs-ui-autotest" options="-parameters" />
+      <module name="xs-user" options="-parameters" />
+      <module name="xs-web" options="-parameters" />
+    </option>
+  </component>
+</project>

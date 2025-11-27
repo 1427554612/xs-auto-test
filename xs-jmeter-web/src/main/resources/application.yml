@@ -1,0 +1,15 @@
+server:
+  port: 12000
+
+spring:
+  application:
+    name: xs-jmeter-web
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://192.168.0.84:3306/xizhao-autotest?serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+jmeter:
+  result:
+    count-result: C:\Users\Administrator\Desktop\xs-jmeter-result-count.csv
