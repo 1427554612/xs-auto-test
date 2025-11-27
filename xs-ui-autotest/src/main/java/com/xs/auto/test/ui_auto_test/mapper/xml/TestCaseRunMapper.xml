@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<<<<<<< HEAD
 <mapper namespace="com.xs.auto.test.ui_auto_test.mapper.TestCaseRunMapper">
-=======
-<mapper namespace="com.example.mapper.TestCaseRunMapper">
->>>>>>> 9031ab800906cc14c28241e8aa4b6dce241e0591
 
     <!-- 清空test_case_run表数据 -->
     <delete id="truncateTestCaseRun">
