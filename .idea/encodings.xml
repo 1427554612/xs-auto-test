@@ -4,13 +4,10 @@
     <file url="file://$PROJECT_DIR$/renren-generator/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/renren-generator/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xs-common/src/main/java" charset="UTF-8" />
-<<<<<<< HEAD
     <file url="file://$PROJECT_DIR$/xs-ftp-server/src/main/java" charset="UTF-8" />
-=======
     <file url="file://$PROJECT_DIR$/xs-common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xs-ftp-server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xs-gateway/src/main/java" charset="UTF-8" />
->>>>>>> 9031ab800906cc14c28241e8aa4b6dce241e0591
     <file url="file://$PROJECT_DIR$/xs-jmeter-web/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xs-jmeter/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xs-kafka/src/main/java" charset="UTF-8" />
@@ -20,9 +17,6 @@
     <file url="file://$PROJECT_DIR$/xs-ui-autotest/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xs-user/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xs-web/src/main/java" charset="UTF-8" />
-<<<<<<< HEAD
-=======
     <file url="file://$PROJECT_DIR$/xs-web/src/main/resources" charset="UTF-8" />
->>>>>>> 9031ab800906cc14c28241e8aa4b6dce241e0591
   </component>
 </project>
