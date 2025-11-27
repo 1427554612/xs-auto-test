@@ -298,11 +298,7 @@ class GroovyScriptExecutor {
                 return methodResults
             }
         } catch (Exception e) {
-<<<<<<< HEAD
-            WebSocketController.sendToClient(userName,"测试x类执行失败："+runMethod+"，错误原因：" + e.printStackTrace())
-=======
-            WebSocketController.sendToClient(userName,"测试类执行失败："+runMethod+"，错误原因：" + e.printStackTrace())
->>>>>>> 9031ab800906cc14c28241e8aa4b6dce241e0591
+            WebSocketController.sendToClient(userName,"测试1类执行失败："+runMethod+"，错误原因：" + e.printStackTrace())
             return false
         }
     }
