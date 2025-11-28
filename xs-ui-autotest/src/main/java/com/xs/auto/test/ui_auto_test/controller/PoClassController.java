@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/po")
+@RequestMapping("/uitest/po")
 public class PoClassController {
 
     @Autowired

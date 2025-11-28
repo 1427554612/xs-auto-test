@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/test-case-config")
+@RequestMapping("/uitest/test-case-config")
 public class TestCaseConfigController {
 
     @Autowired

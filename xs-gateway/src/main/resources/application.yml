@@ -1,5 +1,37 @@
 server:
-  port: 10000
+  port: 9999
 spring:
   application:
     name: xs-gateway
+  cloud:
+    nacos:
+      config:
+        import-check:
+          enabled: false
+      discovery:
+        server-addr: 192.168.0.175:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        group: DEFAULT_GROUP
+        ip: ${HOST_IP:${spring.cloud.client.ip-address}}
+        port: ${SERVER_PORT:${server.port}}
+    gateway:
+      discovery:
+        locator:
+          enabled: true  # 启用服务发现
+          lower-case-service-id: true
+      routes:
+        - id: xs-ftp-server
+          uri: lb://xs-ftp-server
+          predicates:
+            - Path=/files/**
+        - id: ui-auto-test
+          uri: lb://xs-ui-autotest
+          predicates:
+              - Path=/uitest/**
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
+    com.alibaba.nacos: INFO

@@ -21,7 +21,7 @@ import java.util.List;
  * </p>
  */
 @RestController
-@RequestMapping("/test-case-run")
+@RequestMapping("/uitest/test-case-run")
 public class TestCaseRunController {
 
     @Autowired

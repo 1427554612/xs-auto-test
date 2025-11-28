@@ -26,7 +26,7 @@ import java.util.Map;
  * ui自动化测试类
  */
 @RestController
-@RequestMapping("/testcase")
+@RequestMapping("/uitest/testcase")
 public class TestCaseController {
 
     @Autowired

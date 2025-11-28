@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/files")
+@RequestMapping("/files")
 @Slf4j
 public class FileController {
 
